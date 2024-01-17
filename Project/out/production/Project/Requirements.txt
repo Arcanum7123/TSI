@@ -1,0 +1,25 @@
+Calc how much paint needed to paint a room automatically
+Paint pots tell how much area it covers (m^2/l)
+Wants to put in room measurements and paint pot size
+Wants to know how much it will cost (just use generic price - options for different paint prices?)
+May not be painting all walls every time (input area by surface)
+Account for windows/doors
+Not all rooms rectangular
+
+Inputs:
+Is this the standard price being used
+	If no, what is the price
+Is the standard size being used
+	If no, what area does the paint pot cover
+How many surfaces are being painted
+	For each surface:
+		Is the surface rectangular
+			How many windows/doors
+				If>0 sizes of each
+			If yes, height+width
+			If no, area of surface
+Calc total area being painted
+Divide by amount pot covers (round up)
+Multiply no. of pots by price of pots
+
+Output no. of pots and price
