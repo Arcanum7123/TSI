@@ -1,3 +1,4 @@
+git add . to update shit first
 Git commit to save (only when working)
 When in that, name it, then press escape, then type ":wq" and press enter
 Other way to commit: git commit -m "hello"
