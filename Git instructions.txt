@@ -1,2 +1,11 @@
 Git commit to save (only when working)
 When in that, name it, then press escape, then type ":wq" and press enter
+Other way to commit: git commit -m "hello"
+
+SSH keys
+ssh-keygen -t rsa -b 4096
+Select where it's saved, set password
+Go to file location, one can be sent
+Long string is actual key, first bit tells you how it's encrypted, but copy all when using
+Go to profile on github, then new ssh key and paste key and make title, click add
+In git, type ssh -T git@github.com
