@@ -41,9 +41,9 @@ public class PaintCalc {
         byte surfaces = reader.nextByte();
 
         for (byte i=1; i<=surfaces; i++) {
-            
-        }
 
+        }
+        System.out.println("Hellooooo");
     }
 }
 

@@ -1,0 +1,2 @@
+Git commit to save (only when working)
+When in that, name it, then press escape, then type ":wq" and press enter
