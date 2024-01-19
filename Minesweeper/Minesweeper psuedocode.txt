@@ -1,0 +1,11 @@
+Minesweeper
+>select boards size
+>take no. of mine input
+>place mines
+>draw board (w/ coords)
+Loop
+>take input
+>check if mine >end if is
+>if not, check no. of adj mines
+>change to number
+>check if any non-mine spaces >if not, win
