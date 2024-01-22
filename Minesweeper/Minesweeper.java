@@ -308,70 +308,77 @@ public class Minesweeper {
             //Actual gameplay
             boolean gOver = false;
             boolean gWin = false;
+
             char action = 'S';
+            int row = 0;
+            int column = 0;
             do {
                 showPlayer(playerPerspective, rowSize, colSize);
                 System.out.println();
                 System.out.println(mineLocations.minesRemain + " mines remaining.");
 
-                //Select player action
-                System.out.println("Do you want to select a cell (\"S\"), flag a cell as a mine (\"F\"), or unflag a cell (\"U\")?");
-                do { //Get valid input
-                    valid = true;
-                    while (!reader.hasNextLine()) {
-                        System.out.println("Please type \"S\", \"F\", or \"U\".");
-                        reader.next();
-                    }
-                    String inputAction = reader.nextLine().toUpperCase();
-                    if ((!inputAction.equals("S")) && (!inputAction.equals("F")) && (!inputAction.equals("U"))) {
-                        valid = false;
-                        System.out.println("Please type \"S\", \"F\", or \"U\".");
-                    } else {
-                        action = inputAction.toCharArray()[0];
-                    }
-                } while (!valid);
+                String inputColumn = "X";
+                String inputRow = "X";
 
-                //Select cell
-                int row = 0;
-                int column = 0;
-
-                //Get column
-                System.out.println("Select column (1-" + colSize + ").");
                 do {
-                    String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40"};
-                    valid = true;
+                    //Select player action
+                    System.out.println("Do you want to select a cell (\"S\"), flag a cell as a mine (\"F\"), or unflag a cell (\"U\")?");
+                    do { //Get valid input
+                        valid = true;
+                        while (!reader.hasNextLine()) {
+                            System.out.println("Please type \"S\", \"F\", or \"U\".");
+                            reader.next();
+                        }
+                        String inputAction = reader.nextLine().toUpperCase();
+                        if ((!inputAction.equals("S")) && (!inputAction.equals("F")) && (!inputAction.equals("U"))) {
+                            valid = false;
+                            System.out.println("Please type \"S\", \"F\", or \"U\".");
+                        } else {
+                            action = inputAction.toCharArray()[0];
+                        }
+                    } while (!valid);
 
-                    while (!reader.hasNextLine()) {
-                        System.out.println("Please enter a number from 1 to " + colSize + " (inclusive).");
-                        reader.next();
-                    }
-                    String inputColumn = reader.nextLine();
-                    if (!Arrays.asList(numbers).contains(inputColumn)) {
-                        valid = false;
-                        System.out.println("Please enter a number from 1 to " + colSize + " (inclusive).");
-                    } else {
-                        column = getIndex(numbers, inputColumn);
-                    }
-                } while (!valid);
+                    //Select cell
+                    //Get column
+                    System.out.println("Select column (1-" + colSize + ").");
+                    do {
+                        String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40"};
+                        valid = true;
 
-                //Get row
-                String[] alpha = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"};
-                System.out.println("Select row (A-" + alpha[rowSize-1] + ").");
-                do { //Get valid input
-                    valid = true;
+                        while (!reader.hasNextLine()) {
+                            System.out.println("Please enter a number from 1 to " + colSize + " (inclusive).");
+                            reader.next();
+                        }
+                        inputColumn = reader.nextLine().toUpperCase();
+                        if (!Arrays.asList(numbers).contains(inputColumn) && !inputColumn.equals("X")) {
+                            valid = false;
+                            System.out.println("Please enter a number from 1 to " + colSize + " (inclusive).");
+                        } else if (!inputColumn.equals("X")) {
+                            column = getIndex(numbers, inputColumn);
+                        }
+                    } while (!valid);
 
-                    while (!reader.hasNextLine()) {
-                        System.out.println("Please type a letter from A to " + alpha[rowSize-1] + " (inclusive).");
-                        reader.next();
+                    //Get row
+                    if (!inputColumn.equals("X")) {
+                        String[] alpha = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"};
+                        System.out.println("Select row (A-" + alpha[rowSize - 1] + ").");
+                        do { //Get valid input
+                            valid = true;
+
+                            while (!reader.hasNextLine()) {
+                                System.out.println("Please type a letter from A to " + alpha[rowSize - 1] + " (inclusive).");
+                                reader.next();
+                            }
+                            inputRow = reader.nextLine().toUpperCase();
+                            if (!Arrays.asList(alpha).contains(inputRow) && !inputRow.equals("X")) {
+                                valid = false;
+                                System.out.println("Please type a letter from A to " + alpha[rowSize - 1] + " (inclusive).");
+                            } else if (!inputRow.equals("X")) {
+                                row = getIndex(alpha, inputRow);
+                            }
+                        } while (!valid);
                     }
-                    String inputRow = reader.nextLine().toUpperCase();
-                    if (!Arrays.asList(alpha).contains(inputRow)) {
-                        valid = false;
-                        System.out.println("Please type a letter from A to " + alpha[rowSize-1] + " (inclusive).");
-                    } else {
-                        row = getIndex(alpha, inputRow);
-                    }
-                } while (!valid);
+                } while (inputColumn.equals("X") || inputRow.equals("X"));
 
                 //Reveal relevant cells
                 switch (action) {
