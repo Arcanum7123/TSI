@@ -1,8 +1,10 @@
+package org.example;
+
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Vector;
 
-public class Minesweeper {
+public class MinesweeperMaven {
     public static class Board { //16x30=480
         int [][] fullBoard;
         public Board(int rows, int columns) {
@@ -40,7 +42,7 @@ public class Minesweeper {
 
         } while (locs.size() != mines);
         return locs;
-    } //End of places
+    }
     ///////////////////////////////////////////////////////////////////////////////
 
     public static Board valueMatrix(Board locs, int rows, int cols) {
@@ -192,7 +194,7 @@ public class Minesweeper {
 
         return newPlayerView;
     }
-    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////
 
     public static int getIndex(String [] arrayToSearch, String input) {
         int i=0;
@@ -209,7 +211,7 @@ public class Minesweeper {
 
         return i;
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static Board revealAdjacent(Board pView, Board mineLocations, Board valueMatrix, int x, int y, int rows, int cols) {
         if ((x - 1) >= 0) {
@@ -254,97 +256,128 @@ public class Minesweeper {
         }
         return pView;
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static byte getNumberOfMines() {
+        Scanner reader = new Scanner(System.in);
+        byte mineAmount = 0;
+        boolean valid;
+        System.out.println("MINESWEEPER");
+        System.out.println("How many mines do you want to play with? 60, 80, or 100");
+        do {
+            valid = true;
+            while (!reader.hasNextLine()) {
+                System.out.println("Please type one of the three options for number of mines.");
+                reader.next();
+            }
+            String inputNum = reader.nextLine();
+            if ((!inputNum.equals("60")) && (!inputNum.equals("80")) && (!inputNum.equals("100"))) {
+                valid = false;
+                System.out.println("Please type one of the three options for number of mines.");
+            } else {
+                mineAmount = Byte.parseByte(inputNum);
+            }
+        } while (!valid);
+        return mineAmount;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    public static char getBoardSize() {
+        Scanner reader = new Scanner(System.in);
+        boolean valid;
+        char gameSize = 'M';
+        System.out.println();
+        System.out.println("Do you want to play on a small (\"S\"), medium (\"M\"), or large (\"L\") board?");
+        do {
+            valid = true;
+            while (!reader.hasNextLine()) {
+                System.out.println("Please enter \"S\", \"M\", or \"L\" for your board size.");
+                reader.next();
+            }
+            String inputSize = reader.nextLine().toUpperCase();
+            if ((!inputSize.equals("S")) && (!inputSize.equals("M")) && (!inputSize.equals("L"))) {
+                valid = false;
+                System.out.println("Please enter \"S\", \"M\", or \"L\" for your board size.");
+            } else {
+                gameSize = inputSize.toCharArray()[0];
+            }
+        } while (!valid);
+        return gameSize;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    public static int[] setBoardDims(char gameSize) {
+        int [] boardDims = {1, 1};
+        switch (gameSize) {
+            case 'S':
+                boardDims = new int[]{12, 20};
+                break;
+            case 'M':
+                boardDims = new int[]{16, 30};
+                break;
+            case 'L':
+                boardDims = new int[]{20, 40};
+                break;
+        }
+        return boardDims;
+    }
+    /////////////////////////////////////////////////////////////////////////////////
+
+    public static Board placeMinesInGrid(Vector<Integer> locNumbers, int mineCount, int rows, int cols) {
+        Board mineLocations = new Board(rows, cols);
+        int x; //vertical coord 0-15
+        int y; //horizontal coord 0-29
+        int z; //current location 1-480
+
+        for (byte i = 0; i <= (mineCount - 1); i++) {
+            z = locNumbers.get(i); //get mine location
+
+           /* if (i == (mineCount - 1)) {
+                z=1;
+            }*/
+
+            x = (z - (z % cols)) / cols; //set row - Wrong?
+            y = (z % cols); //set column - Wrong?
+
+            mineLocations.setValue(x, y, 1);
+        }
+
+        return mineLocations;
+    }
 
     public static void main(String[] args) {
         boolean playAgain;
         do {
             Scanner reader = new Scanner(System.in);
-
-            //Ask number of mines to play with
-            byte mineAmount = 0;
             boolean valid;
-            System.out.println("MINESWEEPER");
-            System.out.println("How many mines do you want to play with? 60, 80, or 100");
-            do {
-                valid = true;
-                while (!reader.hasNextLine()) {
-                    System.out.println("Please type one of the three options for number of mines.");
-                    reader.next();
-                }
-                String inputNum = reader.nextLine();
-                if ((!inputNum.equals("60")) && (!inputNum.equals("80")) && (!inputNum.equals("100"))) {
-                    valid = false;
-                    System.out.println("Please type one of the three options for number of mines.");
-                } else {
-                    mineAmount = Byte.parseByte(inputNum);
-                }
-            } while (!valid);
 
-            //Set game board size
-            char gameSize = 'M';
-            System.out.println();
-            System.out.println("Do you want to play on a small (\"S\"), medium (\"M\"), or large (\"L\") board?");
-            do {
-                valid = true;
-                while (!reader.hasNextLine()) {
-                    System.out.println("Please enter \"S\", \"M\", or \"L\" for your board size.");
-                    reader.next();
-                }
-                String inputSize = reader.nextLine().toUpperCase();
-                if ((!inputSize.equals("S")) && (!inputSize.equals("M")) && (!inputSize.equals("L"))) {
-                    valid = false;
-                    System.out.println("Please enter \"S\", \"M\", or \"L\" for your board size.");
-                } else {
-                    gameSize = inputSize.toCharArray()[0];
-                }
-            } while (!valid);
+            //Get number of mines to play with
+            byte mineAmount = getNumberOfMines();
 
-            int rowSize = 16;
-            int colSize = 30;
-            switch (gameSize) {
-                case 'S':
-                    rowSize = 12;
-                    colSize = 20;
-                    break;
-                case 'M':
-                    rowSize = 16;
-                    colSize = 30;
-                    break;
-                case 'L':
-                    rowSize = 20;
-                    colSize = 40;
-                    break;
-            }
+            //Set game board size/dimensions
+            char gameSize = getBoardSize();
+            int [] boardDims = setBoardDims(gameSize); //boardsDims[0] = number of rows; boardDims[1]= number of columns
+
+            //Generate mine location numbers (1-number of cells)
+            Vector<Integer> locationNums = places(mineAmount, boardDims[0], boardDims[1]);
 
             //Create board with mine locations
-            Board mineLocations = new Board(rowSize, colSize);
+            Board mineLocations = placeMinesInGrid(locationNums, mineAmount, boardDims[0], boardDims[1]);
             mineLocations.minesRemain = mineAmount;
 
-            //Generate mine location numbers
-            Vector<Integer> locationNums = new Vector<>();
-            locationNums = places(mineAmount, rowSize, colSize);
 
-            int x; //vertical coord 0-15
-            int y; //horizontal coord 0-29
-            int z; //current location 1-480
-            for (byte i = 0; i <= (mineAmount - 1); i++) {
-                z = locationNums.get(i); //get mine location
 
-                x = (z - (z % colSize)) / colSize;
-                y = (z % colSize);
 
-                mineLocations.setValue(x, y, 1);
-            }
 
             //Value matrix (no. of adj mines)
-            Board values = valueMatrix(mineLocations, rowSize, colSize);
+            Board values = valueMatrix(mineLocations, boardDims[0], boardDims[1]);
 
             //Player view initial set up
             //Codes: 0-8 = number of adj mines; 9 = mine; 10 = flagged; 11 = unknown
-            Board playerPerspective = new Board(rowSize, colSize);
+            Board playerPerspective = new Board(boardDims[0], boardDims[1]);
 
-            for (int i = 0; i <= (rowSize - 1); i++) {
-                for (int j = 0; j <= (colSize - 1); j++) {
+            for (int i = 0; i <= (boardDims[0] - 1); i++) {
+                for (int j = 0; j <= (boardDims[1] - 1); j++) {
                     playerPerspective.setValue(i, j, 11);
                 }
             }
@@ -357,7 +390,7 @@ public class Minesweeper {
             int row = 0;
             int column = 0;
             do {
-                showPlayer(playerPerspective, rowSize, colSize);
+                showPlayer(playerPerspective, boardDims[0], boardDims[1]);
                 System.out.println();
                 System.out.println(mineLocations.minesRemain + " mines remaining.");
 
@@ -384,19 +417,19 @@ public class Minesweeper {
 
                     //Select cell
                     //Get column
-                    System.out.println("Select column (1-" + colSize + "), or enter \"X\" to undo.");
+                    System.out.println("Select column (1-" + boardDims[1] + "), or enter \"X\" to undo.");
                     do {
                         String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40"};
                         valid = true;
 
                         while (!reader.hasNextLine()) {
-                            System.out.println("Please enter a number from 1 to " + colSize + " (inclusive), or enter \"X\" to undo.");
+                            System.out.println("Please enter a number from 1 to " + boardDims[1] + " (inclusive), or enter \"X\" to undo.");
                             reader.next();
                         }
                         inputColumn = reader.nextLine().toUpperCase();
                         if (!Arrays.asList(numbers).contains(inputColumn) && !inputColumn.equals("X")) {
                             valid = false;
-                            System.out.println("Please enter a number from 1 to " + colSize + " (inclusive), or enter \"X\" to undo.");
+                            System.out.println("Please enter a number from 1 to " + boardDims[1] + " (inclusive), or enter \"X\" to undo.");
                         } else if (!inputColumn.equals("X")) {
                             column = getIndex(numbers, inputColumn);
                         }
@@ -405,18 +438,18 @@ public class Minesweeper {
                     //Get row
                     if (!inputColumn.equals("X")) {
                         String[] alpha = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"};
-                        System.out.println("Select row (A-" + alpha[rowSize - 1] + "), or enter \"X\" to undo.");
+                        System.out.println("Select row (A-" + alpha[boardDims[0] - 1] + "), or enter \"X\" to undo.");
                         do { //Get valid input
                             valid = true;
 
                             while (!reader.hasNextLine()) {
-                                System.out.println("Please type a letter from A to " + alpha[rowSize - 1] + " (inclusive), or enter \"X\" to undo.");
+                                System.out.println("Please type a letter from A to " + alpha[boardDims[0] - 1] + " (inclusive), or enter \"X\" to undo.");
                                 reader.next();
                             }
                             inputRow = reader.nextLine().toUpperCase();
                             if (!Arrays.asList(alpha).contains(inputRow) && !inputRow.equals("X")) {
                                 valid = false;
-                                System.out.println("Please type a letter from A to " + alpha[rowSize - 1] + " (inclusive), or enter \"X\" to undo.");
+                                System.out.println("Please type a letter from A to " + alpha[boardDims[0] - 1] + " (inclusive), or enter \"X\" to undo.");
                             } else if (!inputRow.equals("X")) {
                                 row = getIndex(alpha, inputRow);
                             }
@@ -429,9 +462,9 @@ public class Minesweeper {
                     case 'S':
                         //Need to lose when revealAdj hits a mine
                         if ((playerPerspective.getValue(row, column) >=1) && playerPerspective.getValue(row, column) <= 8) {
-                            revealAdjacent(playerPerspective, mineLocations, values, row, column, rowSize, colSize);
+                            revealAdjacent(playerPerspective, mineLocations, values, row, column, boardDims[0], boardDims[1]);
                         } else {
-                             recalcPlayerView(playerPerspective, mineLocations, values, row, column, rowSize, colSize);
+                            recalcPlayerView(playerPerspective, mineLocations, values, row, column, boardDims[0], boardDims[1]);
                             if (playerPerspective.getValue(row, column) == 9) {
                                 gOver = true;
                             }
@@ -452,8 +485,8 @@ public class Minesweeper {
 
                 if (!gOver) {
                     int spaces = 0;
-                    for (int i = 0; i <= (rowSize - 1) ; i++) {
-                        for (int j = 0; j <= (colSize - 1); j++) {
+                    for (int i = 0; i <= (boardDims[0] - 1) ; i++) {
+                        for (int j = 0; j <= (boardDims[1] - 1); j++) {
                             if ((playerPerspective.getValue(i, j) == 10) || (playerPerspective.getValue(i, j) == 11)) {
                                 spaces = spaces + 1;
                             }
@@ -468,14 +501,14 @@ public class Minesweeper {
 
             //Show player full board
             playerPerspective = values;
-            for (int i = 0; i <= (rowSize - 1); i++) {
-                for (int j = 0; j <= (colSize - 1); j++) {
+            for (int i = 0; i <= (boardDims[0] - 1); i++) {
+                for (int j = 0; j <= (boardDims[1] - 1); j++) {
                     if (mineLocations.getValue(i, j) == 1) {
                         playerPerspective.setValue(i, j, 9);
                     }
                 }
             }
-            showPlayer(playerPerspective, rowSize, colSize);
+            showPlayer(playerPerspective, boardDims[0], boardDims[1]);
             System.out.println();
 
             //Result message
